@@ -1,0 +1,14 @@
+name: PR Check
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Always Fail
+        run: exit 1
