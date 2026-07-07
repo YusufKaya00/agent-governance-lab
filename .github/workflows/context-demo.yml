@@ -1,0 +1,27 @@
+name: GitHub Context Demo
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  context:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print Actor
+        run: echo "Actor = ${{ github.actor }}"
+
+      - name: Print Event
+        run: echo "Event = ${{ github.event_name }}"
+
+      - name: Print Branch
+        run: echo "Branch = ${{ github.ref }}"
+
+      - name: Print Repository
+        run: echo "Repository = ${{ github.repository }}"
+
+      - name: Print Commit
+        run: echo "Commit = ${{ github.sha }}"
