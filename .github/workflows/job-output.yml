@@ -1,0 +1,25 @@
+name: Job Output Demo
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  producer:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.generate.outputs.version }}
+    steps:
+      - id: generate
+        run: |
+          echo "version=2.0.0" >> $GITHUB_OUTPUT
+
+  consumer:
+    needs: producer
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Received Version:"
+          echo "${{ needs.producer.outputs.version }}"
