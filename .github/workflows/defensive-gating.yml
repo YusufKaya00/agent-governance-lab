@@ -1,0 +1,17 @@
+name: Defensive Gating
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pr-only:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Message
+        run: |
+          echo "Running because this is a Pull Request."
