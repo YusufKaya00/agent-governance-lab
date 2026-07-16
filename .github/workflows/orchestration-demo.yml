@@ -10,27 +10,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Planning
-        run: |
-          echo "Planning..."
+      - run: |
+          echo Planning
           sleep 5
 
-  implement:
-    needs: plan
+  risk:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Implementation
-        run: |
-          echo "Implementing..."
+      - run: |
+          echo Risk Analysis
           sleep 5
 
-  validate:
-    needs: implement
+  merge:
+    needs:
+      - plan
+      - risk
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Validation
-        run: |
-          echo "Validating..."
+      - run: |
+          echo Merge Results
           sleep 5
