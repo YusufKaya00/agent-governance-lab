@@ -1,0 +1,35 @@
+name: Orchestration Demo
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  plan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Planning
+        run: |
+          echo "Planning..."
+          sleep 5
+
+  implement:
+    needs: plan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Implementation
+        run: |
+          echo "Implementing..."
+          sleep 5
+
+  validate:
+    needs: implement
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validation
+        run: |
+          echo "Validating..."
+          sleep 5
