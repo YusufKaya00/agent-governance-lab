@@ -2,7 +2,7 @@
 
 This repository is a research and experimental lab designed for **Agentic AI** developers. The primary focus of the project is to test, evaluate, and optimize **Defensive Gating** mechanisms developed to govern, secure, and monitor autonomous AI agents.
 
-## 🚀 Purpose
+## 🚀 Purpose - Modified by Branch B
 
 As AI agents interact with their environments and make critical decisions, it is essential that their actions comply with safety policies, ethical standards, and operational guidelines. Agent Governance Lab provides:
 - Evaluation of agent decision-making workflows,
