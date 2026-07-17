@@ -1,0 +1,6 @@
+{
+  "agent": "dependency",
+  "status": "success",
+  "evidence": "All checks passed",
+  "next_owner": "human-reviewer"
+}

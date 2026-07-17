@@ -12,3 +12,8 @@ jobs:
 
       - name: Always Pass
         run: echo "Tests passed"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dependency-report
+          path: report.json
