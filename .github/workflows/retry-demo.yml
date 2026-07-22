@@ -1,0 +1,26 @@
+name: Retry Demo
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  retry:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Attempt 1
+        run: |
+          echo "Attempt 1"
+          exit 1
+        continue-on-error: true
+
+      - name: Attempt 2
+        run: |
+          echo "Attempt 2"
+          exit 1
+        continue-on-error: true
+
+      - name: Escalation
+        run: |
+          echo "Escalate to human reviewer"
