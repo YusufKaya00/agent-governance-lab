@@ -1,0 +1,35 @@
+name: Orchestration Demo
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+
+  plan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          echo Planning
+          sleep 5
+
+  risk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          echo Risk Analysis
+          sleep 5
+
+  merge:
+    needs:
+      - plan
+      - risk
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          echo Merge Results
+          sleep 5
