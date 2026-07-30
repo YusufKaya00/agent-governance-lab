@@ -12,3 +12,12 @@ jobs:
 
       - name: Always Pass
         run: echo "Tests passed"
+
+  policy-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run policy check
+        run: node scripts/check-policy.js
