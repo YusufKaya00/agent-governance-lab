@@ -1,8 +1,10 @@
 ## Objective
 
-## Plan
+## Motivation
 
-## Acceptance Criteria
+## Changes
+
+## Validation
 
 ## Risks
 
