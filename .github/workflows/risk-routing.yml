@@ -1,0 +1,52 @@
+name: Risk Based Execution
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    name: Read Risk
+    runs-on: ubuntu-latest
+
+    outputs:
+      risk: ${{ steps.read-risk.outputs.risk }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read risk from plan
+        id: read-risk
+        run: |
+          risk=$(jq -r '.risk' plan.json)
+          echo "Risk level: $risk"
+          echo "risk=$risk" >> "$GITHUB_OUTPUT"
+
+  auto-execute:
+    name: Automatic Execution
+    needs: plan
+    if: needs.plan.outputs.risk == 'low'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Execute low-risk task
+        run: |
+          echo "Low-risk task approved for automatic execution."
+          echo "Executing automatically..."
+
+  approval-execute:
+    name: Human Approval Required
+    needs: plan
+    if: needs.plan.outputs.risk != 'low'
+    runs-on: ubuntu-latest
+
+    environment:
+      name: test
+
+    steps:
+      - name: Execute approved task
+        run: |
+          echo "Execution allowed after environment approval."
