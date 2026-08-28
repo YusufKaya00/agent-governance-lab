@@ -1,0 +1,52 @@
+name: Agent Observability
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evidence:
+    name: Generate Agent Evidence
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate evidence
+        env:
+          REPOSITORY: ${{ github.repository }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+          COMMIT_SHA: ${{ github.sha }}
+          WORKFLOW_RUN_ID: ${{ github.run_id }}
+          ACTOR: ${{ github.actor }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          mkdir -p evidence
+
+          cat > evidence/agent-report.json <<EOF
+          {
+            "repository": "$REPOSITORY",
+            "branch": "$BRANCH",
+            "commit_sha": "$COMMIT_SHA",
+            "workflow_run_id": "$WORKFLOW_RUN_ID",
+            "actor": "$ACTOR",
+            "event": "$EVENT_NAME",
+            "result": "success"
+          }
+          EOF
+
+      - name: Verify evidence exists
+        run: |
+          test -f evidence/agent-report.json
+          cat evidence/agent-report.json
+
+      - name: Upload agent evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-evidence
+          path: evidence/agent-report.json
