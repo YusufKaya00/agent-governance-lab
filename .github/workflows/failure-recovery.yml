@@ -5,15 +5,19 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   recovery:
     name: Bounded Retry
     runs-on: ubuntu-latest
 
+    outputs:
+      result: ${{ steps.run_task.outputs.result }}
+
     steps:
       - name: Run task with bounded retries
-        id: recovery
+        id: run_task
         shell: bash
         run: |
           max_attempts=3
@@ -21,15 +25,30 @@ jobs:
           for attempt in 1 2 3; do
             echo "Attempt $attempt of $max_attempts"
 
-            # Simulated task
-            if [ "$attempt" -eq 3 ]; then
-              echo "Task succeeded"
-              exit 0
-            fi
+            # Simulate permanent failure
+            echo "Task failed"
 
-            echo "Task failed temporarily"
             sleep 2
           done
 
           echo "Task failed after $max_attempts attempts"
-          exit 1
+          echo "result=failed" >> "$GITHUB_OUTPUT"
+          exit 0
+
+  escalate:
+    name: Human Escalation
+    needs: recovery
+    if: needs.recovery.outputs.result == 'failed'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create escalation report
+        env:
+          RUN_ID: ${{ github.run_id }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          echo "AUTOMATION ESCALATION"
+          echo "Run ID: $RUN_ID"
+          echo "Branch: $BRANCH"
+          echo "Failure threshold reached."
+          echo "Suggested action: human investigation."
