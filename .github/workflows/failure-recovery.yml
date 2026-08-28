@@ -1,0 +1,35 @@
+name: Failure Recovery
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recovery:
+    name: Bounded Retry
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run task with bounded retries
+        id: recovery
+        shell: bash
+        run: |
+          max_attempts=3
+
+          for attempt in 1 2 3; do
+            echo "Attempt $attempt of $max_attempts"
+
+            # Simulated task
+            if [ "$attempt" -eq 3 ]; then
+              echo "Task succeeded"
+              exit 0
+            fi
+
+            echo "Task failed temporarily"
+            sleep 2
+          done
+
+          echo "Task failed after $max_attempts attempts"
+          exit 1
