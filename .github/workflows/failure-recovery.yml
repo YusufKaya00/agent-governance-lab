@@ -22,7 +22,7 @@ jobs:
             echo "Attempt $attempt of $max_attempts"
 
             # Simulated task
-            if [ "$attempt" -eq 3 ]; then
+            if [ "$attempt" -eq 4 ]; then
               echo "Task succeeded"
               exit 0
             fi
