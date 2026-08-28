@@ -42,8 +42,8 @@ jobs:
 
       - name: Verify evidence exists
         run: |
+          rm evidence/agent-report.json
           test -f evidence/agent-report.json
-          cat evidence/agent-report.json
 
       - name: Upload agent evidence
         uses: actions/upload-artifact@v4
