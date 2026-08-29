@@ -1,0 +1,36 @@
+name: Least Privilege
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Read Only Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Analyze repository
+        run: |
+          echo "Repository can be read."
+          git status
+          git log -5 --oneline
+
+  update-pr:
+    name: Update PR
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Show permissions boundary
+        run: |
+          echo "This job has pull request write permission."
+          echo "Contents remain read-only."
