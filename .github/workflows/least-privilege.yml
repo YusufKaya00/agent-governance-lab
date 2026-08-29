@@ -15,11 +15,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Analyze repository
+      - name: Try PR write operation without permission
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          echo "Repository can be read."
-          git status
-          git log -5 --oneline
+          echo "Attempting to comment on PR #37 with read-only permissions..."
+          gh pr comment 37 --body "Analysis complete (from analyze job)"
 
   update-pr:
     name: Update PR
@@ -30,7 +31,12 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Show permissions boundary
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Comment on PR with elevated permission
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          echo "This job has pull request write permission."
-          echo "Contents remain read-only."
+          echo "Commenting on PR #37 with pull-requests: write permission..."
+          gh pr comment 37 --body "Least-privilege workflow successfully updated this PR."
