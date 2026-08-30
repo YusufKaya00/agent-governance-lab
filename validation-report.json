@@ -1,0 +1,8 @@
+{
+  "totalProducts": 3,
+  "invalidProducts": 1,
+  "passed": false,
+  "invalidIds": [
+    2
+  ]
+}
