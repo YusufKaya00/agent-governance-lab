@@ -1,17 +1,17 @@
 {
-  "task": "Validate product inventory data",
-  "inputs": [
-    "products.json"
+  "task": "Update repository health configuration",
+  "risk": "high",
+  "scope": [
+    "config/**"
   ],
-  "outputs": [
-    "validation-report.json"
+  "non_goals": [
+    "Do not modify application source code",
+    "Do not modify production deployment workflow"
   ],
   "success_criteria": [
-    "All product stock values must be greater than or equal to zero",
-    "Validation report must be generated"
-  ],
-  "constraints": [
-    "Do not modify application source code",
-    "Do not modify workflow files"
+    "Configuration is valid JSON",
+    "Health status is enabled",
+    "Required checks pass",
+    "Evidence report is generated"
   ]
 }
