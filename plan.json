@@ -1,4 +1,14 @@
 {
-  "task": "Update README",
-  "risk": "low"
+  "task": "Modify authentication configuration",
+  "risk": "high",
+  "scope": [
+    "src/auth/**"
+  ],
+  "changes": [
+    "Update authentication configuration"
+  ],
+  "success_criteria": [
+    "Authentication tests pass",
+    "No files outside the defined scope are modified"
+  ]
 }
