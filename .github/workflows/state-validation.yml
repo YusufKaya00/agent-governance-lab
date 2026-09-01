@@ -38,3 +38,20 @@ jobs:
           echo "Commit: ${{ github.sha }}"
           echo "Branch: ${{ github.head_ref }}"
           echo "PR: #${{ github.event.pull_request.number }}"
+
+      - name: Validate current acceptance behavior
+        run: |
+          node -e '
+          const fs = require("fs");
+
+          const data = JSON.parse(
+            fs.readFileSync("health.json", "utf8")
+          );
+
+          if (data.status !== "ok") {
+            console.error("Context drift detected: expected status=ok");
+            process.exit(1);
+          }
+
+          console.log("Current implementation satisfies the health requirement.");
+          '
