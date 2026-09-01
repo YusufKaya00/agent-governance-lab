@@ -1,0 +1,69 @@
+name: Plan Review
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    name: Validate Plan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate plan
+        run: |
+          test -f plan.json
+          jq -e '.task' plan.json
+          jq -e '.risk' plan.json
+          jq -e '.scope' plan.json
+          jq -e '.changes' plan.json
+          jq -e '.success_criteria' plan.json
+
+          echo "Plan structure is valid."
+
+      - name: Display plan
+        run: |
+          cat plan.json
+
+  approval:
+    name: Approve Plan
+    needs: plan
+    runs-on: ubuntu-latest
+
+    environment:
+      name: plan-approval
+
+    steps:
+      - name: Plan approved
+        run: |
+          echo "Plan has been approved."
+
+  implement:
+    name: Implementation
+    needs: approval
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Implement approved plan
+        run: |
+          echo "Implementation is now allowed."
+          echo "Executing the approved plan..."
+
+  validate:
+    name: Validate Implementation
+    needs: implement
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate result
+        run: |
+          echo "Running validation..."
+          echo "Validation successful."
