@@ -1,5 +1,5 @@
 {
   "service": "api",
-  "timeout": 60,
+  "timeout": 120,
   "retries": 3
 }
