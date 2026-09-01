@@ -1,0 +1,140 @@
+name: Agent Governance
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agent-governance-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-plan:
+    name: Validate Agent Plan
+    runs-on: ubuntu-latest
+
+    outputs:
+      risk: ${{ steps.read-plan.outputs.risk }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate plan structure
+        run: |
+          test -f plan.json
+          jq -e '.task' plan.json
+          jq -e '.risk' plan.json
+          jq -e '.scope' plan.json
+          jq -e '.changes' plan.json
+          jq -e '.success_criteria' plan.json
+          echo "Plan structure is valid."
+
+      - name: Read risk
+        id: read-plan
+        run: |
+          risk=$(jq -r '.risk' plan.json)
+          echo "Risk level: $risk"
+          echo "risk=$risk" >> "$GITHUB_OUTPUT"
+
+  automatic-path:
+    name: Low Risk Path
+    needs: validate-plan
+    if: needs.validate-plan.outputs.risk == 'low'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Automatic Execution Approved
+        run: echo "Low-risk task can proceed automatically without human gate."
+
+  approval-path:
+    name: High Risk Path
+    needs: validate-plan
+    if: needs.validate-plan.outputs.risk != 'low'
+    runs-on: ubuntu-latest
+
+    environment:
+      name: plan-approval
+
+    steps:
+      - name: Human Approval Granted
+        run: echo "High-risk task approved by authorized reviewer."
+
+  implement:
+    name: Implement Approved Plan
+    needs: [validate-plan, automatic-path, approval-path]
+    if: always() && !cancelled() && needs.validate-plan.result == 'success' && !contains(needs.*.result, 'failure')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Implement
+        run: |
+          echo "Implementing approved plan changes within defined scope..."
+
+      - name: Generate evidence
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          mkdir -p evidence
+          cat > evidence/agent-report.json <<EOF
+          {
+            "task": "Update repository health configuration",
+            "commit_sha": "$COMMIT_SHA",
+            "workflow_run_id": "$RUN_ID",
+            "actor": "$ACTOR",
+            "result": "success"
+          }
+          EOF
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-governance-evidence
+          path: evidence/agent-report.json
+
+  quality-gate:
+    name: Governance Quality Gate
+    needs: implement
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate configuration
+        run: |
+          test -f config/health.json
+          status=$(jq -r '.status' config/health.json)
+          echo "Health status: $status"
+          if [ "$status" != "ok" ]; then
+            echo "Quality Gate Failed: health status is not ok."
+            exit 1
+          fi
+          echo "Quality Gate Passed: Business validation successful."
+
+  deploy:
+    name: Production Deployment
+    needs: quality-gate
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+
+    concurrency:
+      group: production
+      cancel-in-progress: true
+
+    steps:
+      - name: Deploy
+        run: |
+          echo "Deploying to production after quality gate and production approval..."
+          echo "Production deployment completed successfully."

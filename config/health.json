@@ -1,0 +1,5 @@
+{
+  "service": "health-check",
+  "status": "ok",
+  "enabled": true
+}

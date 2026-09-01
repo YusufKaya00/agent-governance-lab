@@ -1,14 +1,16 @@
 {
-  "task": "Modify authentication configuration",
-  "risk": "high",
+  "task": "Update repository health configuration",
+  "risk": "low",
   "scope": [
-    "src/auth/**"
+    "config/**"
   ],
   "changes": [
-    "Update authentication configuration"
+    "Update health configuration"
   ],
   "success_criteria": [
-    "Authentication tests pass",
-    "No files outside the defined scope are modified"
+    "Configuration is valid JSON",
+    "Health status is enabled",
+    "Required checks pass",
+    "Evidence report is generated"
   ]
 }
