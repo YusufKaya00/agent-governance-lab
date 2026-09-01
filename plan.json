@@ -1,6 +1,6 @@
 {
-  "task": "Update repository health configuration",
-  "risk": "low",
+  "task": "Update production repository health configuration",
+  "risk": "high",
   "scope": [
     "config/**"
   ],
