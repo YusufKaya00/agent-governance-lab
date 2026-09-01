@@ -103,7 +103,8 @@ jobs:
 
   quality-gate:
     name: Governance Quality Gate
-    needs: implement
+    needs: [implement]
+    if: always() && !cancelled() && needs.implement.result == 'success'
     runs-on: ubuntu-latest
 
     steps:
@@ -123,7 +124,8 @@ jobs:
 
   deploy:
     name: Production Deployment
-    needs: quality-gate
+    needs: [quality-gate]
+    if: always() && !cancelled() && needs.quality-gate.result == 'success'
     runs-on: ubuntu-latest
 
     environment:
